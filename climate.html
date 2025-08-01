@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Change Quiz Platform</title>
+    <link rel="stylesheet" href="climate.css">
+   
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Climate Change Quiz</h1>
+            <p class="subtitle">Test your knowledge on climate change topics</p>
+            <p class="datetime" id="datetime">Loading date and time...</p>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('courses')">📚 climate  Modules</div>
+            <div class="nav-tab" onclick="showSection('climate')"> <a href="astro.html">🌍 Space Tech </a></div>
+            <div class="nav-tab"><a href="carbon_footprint_tracker.html" class="cc">Calculate Carbon</a></div>
+            <div class="nav-tab"><a href="carb.html">Carbon  Intensity</a></div>
+        </div>
+
+        <!-- Quiz Topics Section -->
+        <div id="topics-section" class="content-section active">
+            <div class="topic-grid">
+                <div class="topic-card" onclick="startQuiz('scientific')">
+                    <div class="topic-icon">🔬</div>
+                    <div class="topic-title">Scientific Foundations</div>
+                    <div class="topic-description">
+                        Explore the fundamental science behind climate change, including key concepts like the greenhouse effect and climate feedback loops.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('scientific')">Start Quiz 🎯</button>
+                </div>
+
+                <div class="topic-card" onclick="startQuiz('greenhouse')">
+                    <div class="topic-icon">🌡️</div>
+                    <div class="topic-title">Greenhouse Effect & Gases</div>
+                    <div class="topic-description">
+                        Learn about the greenhouse effect and the role of various greenhouse gases in trapping heat in the atmosphere.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('greenhouse')">Start Quiz 🎯</button>
+                </div>
+
+                <div class="topic-card" onclick="startQuiz('causes')">
+                    <div class="topic-icon">🏭</div>
+                    <div class="topic-title">Causes of Climate Change</div>
+                    <div class="topic-description">
+                        Understand the human activities and natural factors that contribute to climate change.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('causes')">Start Quiz 🎯</button>
+                </div>
+
+                <div class="topic-card" onclick="startQuiz('impacts')">
+                    <div class="topic-icon">🌪️</div>
+                    <div class="topic-title">Impacts of Climate Change</div>
+                    <div class="topic-description">
+                        Discover the wide-ranging effects of climate change on ecosystems, weather patterns, and human societies.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('impacts')">Start Quiz 🎯</button>
+                </div>
+
+                <div class="topic-card" onclick="startQuiz('mitigation')">
+                    <div class="topic-icon">♻️</div>
+                    <div class="topic-title">Mitigation Strategies</div>
+                    <div class="topic-description">
+                        Explore strategies and solutions to reduce greenhouse gas emissions and mitigate climate change.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('mitigation')">Start Quiz 🎯</button>
+                </div>
+
+                <div class="topic-card" onclick="startQuiz('technology')">
+                    <div class="topic-icon">🔋</div>
+                    <div class="topic-title">Technological Innovations</div>
+                    <div class="topic-description">
+                        Learn about cutting-edge technologies that are helping to combat climate change.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('technology')">Start Quiz 🎯</button>
+                </div>
+
+                <div class="topic-card" onclick="startQuiz('future')">
+                    <div class="topic-icon">🔮</div>
+                    <div class="topic-title">Emerging Trends & Future Directions</div>
+                    <div class="topic-description">
+                        Look ahead to the future of climate science and policy, including emerging trends and potential solutions.
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('future')">Start Quiz 🎯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="quiz-screen">
+            <div class="quiz-header">
+                <h2 id="quizTitle" class="quiz-title">Quiz Title</h2>
+                <div class="quiz-progress">
+                    <span id="currentQuestion">1</span>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="totalQuestions">30</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div id="questionText" class="question">Question will appear here</div>
+                <div id="optionsContainer" class="options"></div>
+                <div id="explanationContainer" class="explanation-container"></div>
+            </div>
+
+            <div class="quiz-controls">
+                <button class="btn btn-secondary" onclick="backToTopics()">Back to Topics</button>
+                <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="results-screen">
+            <h2>Quiz Complete!</h2>
+            <div id="scoreCircle" class="score-circle">
+                <div class="score-inner">
+                    <span id="scoreText">0%</span>
+                </div>
+            </div>
+            <h3 id="resultTitle">Great Job!</h3>
+            <p id="resultMessage">You've completed the quiz.</p>
+            <div style="margin-top: 30px;">
+                <button class="btn btn-primary" onclick="backToTopics()">Try Another Topic</button>
+                <button class="btn btn-secondary" onclick="retakeQuiz()" style="margin-left: 15px;">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/climate.js"></script>
+
+</body>
+</html>

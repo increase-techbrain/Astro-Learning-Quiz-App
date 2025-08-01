@@ -1,0 +1,238 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nigeria Carbon Intensity Monitor</title>
+    <link rel="stylesheet" href="carbon-inten.css">
+   
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1 class="title">🇳🇬 Nigeria Carbon Monitor</h1>
+            <p class="subtitle">Real-time electricity grid carbon intensity tracking</p>
+            <button id="callBtn" class="refresh-btn">Refresh Data</button>
+        </div>
+
+        <div class="country-selector">
+            <div class="country-tabs">
+                <div class="country-tab active" data-country="NG">🇳🇬 Nigeria</div>
+                <div class="country-tab" data-country="ZA">🇿🇦 South Africa</div>
+                <div class="country-tab" data-country="KE">🇰🇪 Kenya</div>
+                <div class="country-tab" data-country="EG">🇪🇬 Egypt</div>
+                <div class="country-tab" data-country="GH">🇬🇭 Ghana</div>
+            </div>
+        </div>
+
+        <div class="main-chart">
+            <h2 class="chart-title">Current Carbon Intensity Visualization</h2>
+            <div class="chart-container">
+                <div class="chart-scale">
+                    <span>800+</span>
+                    <span>600</span>
+                    <span>400</span>
+                    <span>200</span>
+                    <span>0</span>
+                </div>
+                <div id="intensity-bar" class="intensity-bar average" style="height: 72%;">
+                    <div class="bar-value" id="bar-value">580 gCO₂/kWh</div>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color low"></div>
+                    <span>Low (0-300 gCO₂/kWh)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color average"></div>
+                    <span>Average (300-600 gCO₂/kWh)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color high"></div>
+                    <span>High (600+ gCO₂/kWh)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="country-comparison">
+            <h2 class="chart-title">Regional Comparison - African Countries</h2>
+            <div class="comparison-grid">
+                <div class="country-card nigeria current">
+                    <div class="country-flag">🇳🇬</div>
+                    <div class="country-name">Nigeria</div>
+                    <div class="country-intensity average" id="ng-intensity">580 gCO₂/kWh</div>
+                    <div class="country-status">
+                        <span class="status-badge moderate">Grid Active</span>
+                    </div>
+                    <div class="country-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Last Update:</span>
+                            <span id="ng-date">25/07/2025</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Time:</span>
+                            <span id="ng-time">07:38:00</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span><span class="live-indicator"></span>Live</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="country-card south-africa">
+                    <div class="country-flag">🇿🇦</div>
+                    <div class="country-name">South Africa</div>
+                    <div class="country-intensity high" id="za-intensity">820 gCO₂/kWh</div>
+                    <div class="country-status">
+                        <span class="status-badge high">Coal Heavy</span>
+                    </div>
+                    <div class="country-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Last Update:</span>
+                            <span id="za-date">25/07/2025</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Time:</span>
+                            <span id="za-time">07:37:45</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span><span class="live-indicator"></span>Live</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="country-card kenya">
+                    <div class="country-flag">🇰🇪</div>
+                    <div class="country-name">Kenya</div>
+                    <div class="country-intensity low" id="ke-intensity">240 gCO₂/kWh</div>
+                    <div class="country-status">
+                        <span class="status-badge online">Renewable Rich</span>
+                    </div>
+                    <div class="country-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Last Update:</span>
+                            <span id="ke-date">25/07/2025</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Time:</span>
+                            <span id="ke-time">07:38:20</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span><span class="live-indicator"></span>Live</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="country-card egypt">
+                    <div class="country-flag">🇪🇬</div>
+                    <div class="country-name">Egypt</div>
+                    <div class="country-intensity average" id="eg-intensity">490 gCO₂/kWh</div>
+                    <div class="country-status">
+                        <span class="status-badge moderate">Mixed Sources</span>
+                    </div>
+                    <div class="country-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Last Update:</span>
+                            <span id="eg-date">25/07/2025</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Time:</span>
+                            <span id="eg-time">07:37:55</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span><span class="live-indicator"></span>Live</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="country-card ghana">
+                    <div class="country-flag">🇬🇭</div>
+                    <div class="country-name">Ghana</div>
+                    <div class="country-intensity average" id="gh-intensity">380 gCO₂/kWh</div>
+                    <div class="country-status">
+                        <span class="status-badge moderate">Hydro + Gas</span>
+                    </div>
+                    <div class="country-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Last Update:</span>
+                            <span id="gh-date">25/07/2025</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Time:</span>
+                            <span id="gh-time">07:38:40</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span><span class="live-indicator"></span>Live</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-grid">
+            <div class="data-card carbon-intensity">
+                <div class="data-label">Carbon Intensity</div>
+                <div class="data-value" id="carbon-intensity">580 gCO₂/kWh</div>
+            </div>
+            <div class="data-card date">
+                <div class="data-label">Date</div>
+                <div class="data-value" id="date">25/07/2025</div>
+            </div>
+            <div class="data-card grid-status">
+                <div class="data-label">Grid Status</div>
+                <div class="data-value">
+                    <span class="status-indicator warning"></span>
+                    <span id="grid-status">Moderate</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="data/carbon-inten.js"></script>
+
+    
+</body>
+</html>

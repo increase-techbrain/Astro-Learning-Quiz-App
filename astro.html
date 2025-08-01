@@ -1,0 +1,244 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroLearn Quiz Platform</title>
+    <link rel="stylesheet" href="astro.css">
+    
+   
+
+       
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 SPACE TECHNOLOGY <br> AstroLearn</h1>
+            <p class="subtitle">Beginner-friendly space technology education for everyone</p>
+            <p class="datetime" id="datetime">Loading date and time...</p>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('courses')">📚 Learning Modules</div>
+            <div class="nav-tab" onclick="showSection('climate')"> <a href="climate.html">🌍 Climate Quiz</a></div>
+            <div class="nav-tab"><a href="carbon_footprint_tracker.html" class="cc">Calculate Carbon</a></div>
+            <div class="nav-tab"><a href="carb.html">Carbon  Intensity</a></div>
+        </div>
+
+        <!-- Learning Modules Section -->
+        <div id="courses-section" class="content-section active">
+            <div class="course-grid">
+                <div class="course-card" onclick="startQuiz('satellite')">
+                    <div class="course-icon">🛰️</div>
+                    <div class="course-title">Satellite Technology & Space Systems</div>
+                    <div class="course-description">
+                        Learn the fundamentals of how satellites work, from basic components to complex space systems. Perfect for beginners with no technical background.
+                    </div>
+                    <div class="curriculum">
+                        <h4>📖 What You'll Learn:</h4>
+                        <ul>
+                            <li>What is a satellite and how does it stay in space?</li>
+                            <li>Types of satellites (weather, GPS, communication)</li>
+                            <li>Basic satellite components (solar panels, antennas)</li>
+                            <li>How satellites are launched and controlled</li>
+                            <li>Real-world satellite applications in daily life</li>
+                            <li>Introduction to space missions and operations</li>
+                        </ul>
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('satellite')">Take Quiz 🎯</button>
+                </div>
+
+                <div class="course-card" onclick="startQuiz('earth_observation')">
+                    <div class="course-icon">🌍</div>
+                    <div class="course-title">Earth Observation & Geospatial Intelligence</div>
+                    <div class="course-description">
+                        Discover how satellites help us monitor Earth from space, track changes, and make important decisions about our planet.
+                    </div>
+                    <div class="curriculum">
+                        <h4>📖 What You'll Learn:</h4>
+                        <ul>
+                            <li>How satellites take pictures of Earth</li>
+                            <li>Weather forecasting from space</li>
+                            <li>Monitoring forests, oceans, and cities</li>
+                            <li>Disaster response and emergency management</li>
+                            <li>GPS and navigation basics</li>
+                            <li>Using satellite maps in everyday life</li>
+                        </ul>
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('earth_observation')">Take Quiz 🎯</button>
+                </div>
+
+                <div class="course-card" onclick="startQuiz('space_data')">
+                    <div class="course-icon">📊</div>
+                    <div class="course-title">Space Data Science & AI</div>
+                    <div class="course-description">
+                        Learn how computers and artificial intelligence help us understand the massive amounts of data that satellites collect every day.
+                    </div>
+                    <div class="curriculum">
+                        <h4>📖 What You'll Learn:</h4>
+                        <ul>
+                            <li>What is space data and why is it important?</li>
+                            <li>How AI helps analyze satellite images</li>
+                            <li>Pattern recognition in space data</li>
+                            <li>Predicting weather and climate changes</li>
+                            <li>Finding planets and stars using data</li>
+                            <li>Simple tools for exploring space data</li>
+                        </ul>
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('space_data')">Take Quiz 🎯</button>
+                </div>
+
+                <div class="course-card" onclick="startQuiz('communications')">
+                    <div class="course-icon">📡</div>
+                    <div class="course-title">Satellite Communications & Ground Systems</div>
+                    <div class="course-description">
+                        Understand how satellites enable global communication, internet, and broadcasting that connects people worldwide.
+                    </div>
+                    <div class="curriculum">
+                        <h4>📖 What You'll Learn:</h4>
+                        <ul>
+                            <li>How satellites enable phone and internet</li>
+                            <li>TV broadcasting and streaming from space</li>
+                            <li>Ground stations and satellite dishes</li>
+                            <li>Emergency communications during disasters</li>
+                            <li>Internet connectivity in remote areas</li>
+                            <li>Future of satellite internet (Starlink, etc.)</li>
+                        </ul>
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('communications')">Take Quiz 🎯</button>
+                </div>
+
+                <div class="course-card" onclick="startQuiz('entrepreneurship')">
+                    <div class="course-icon">🚀</div>
+                    <div class="course-title">Space Entrepreneurship & Innovation</div>
+                    <div class="course-description">
+                        Explore the exciting world of space business, startups, and how entrepreneurs are making space accessible to everyone.
+                    </div>
+                    <div class="curriculum">
+                        <h4>📖 What You'll Learn:</h4>
+                        <ul>
+                            <li>Space industry overview and opportunities</li>
+                            <li>Famous space companies (SpaceX, Blue Origin)</li>
+                            <li>How to start a space-related business</li>
+                            <li>Space tourism and commercial spaceflight</li>
+                            <li>Funding and investment in space ventures</li>
+                            <li>Career paths in the space industry</li>
+                        </ul>
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('entrepreneurship')">Take Quiz 🎯</button>
+                </div>
+
+                <div class="course-card" onclick="startQuiz('astronomy')">
+                    <div class="course-icon">🔭</div>
+                    <div class="course-title">Astro-Informatics & Astronomy Education</div>
+                    <div class="course-description">
+                        Journey through the cosmos and learn how modern technology helps us explore and understand the universe around us.
+                    </div>
+                    <div class="curriculum">
+                        <h4>📖 What You'll Learn:</h4>
+                        <ul>
+                            <li>Introduction to astronomy and space telescopes</li>
+                            <li>How computers help study stars and galaxies</li>
+                            <li>Discovering planets outside our solar system</li>
+                            <li>Black holes, neutron stars, and cosmic phenomena</li>
+                            <li>Search for extraterrestrial life</li>
+                            <li>Citizen science and astronomy participation</li>
+                        </ul>
+                    </div>
+                    <button class="quiz-btn" onclick="startQuiz('astronomy')">Take Quiz 🎯</button>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Climate Quiz Section (Placeholder) -->
+        <div id="climate-section" class="content-section">
+           
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="quiz-screen">
+            <div class="quiz-header">
+                <h2 id="quizTitle" class="quiz-title">Quiz Title</h2>
+                <div class="quiz-progress">
+                    <span id="currentQuestion">1</span>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="totalQuestions">25</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div id="questionText" class="question">Question will appear here</div>
+                <div id="optionsContainer" class="options"></div>
+                <div id="explanationContainer" class="explanation-container"></div>
+            </div>
+
+            <div class="quiz-controls">
+                <button class="btn btn-secondary" onclick="backToTopics()">Back to Topics</button>
+                <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="results-screen">
+            <h2>Quiz Complete!</h2>
+            <div id="scoreCircle" class="score-circle">
+                <div class="score-inner">
+                    <span id="scoreText">0%</span>
+                </div>
+            </div>
+            <h3 id="resultTitle">Great Job!</h3>
+            <p id="resultMessage">You've completed the quiz.</p>
+            <div style="margin-top: 30px;">
+                <button class="btn btn-primary" onclick="backToTopics()">Try Another Topic</button>
+                <button class="btn btn-secondary" onclick="retakeQuiz()" style="margin-left: 15px;">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data/astro.js"></script>
+
+    
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Tracker</title>
+    <link rel="stylesheet" href="carbon_footprint_tracker.css">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Carbon Footprint Tracker</h1>
+            <p>Track and reduce your environmental impact - Made for Nigeria</p>
+            
+            <div style="margin-top: 20px;">
+                <label for="timeframe" style="display: block; margin-bottom: 10px; font-size: 1.1rem;">Track your footprint:</label>
+                <select id="timeframe" style="padding: 10px 20px; font-size: 1rem; border: none; border-radius: 8px; background: white; color: #333; cursor: pointer;" onchange="updateTimeframeLabels()">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly" selected>Monthly</option>
+                </select>
+            </div>
+        </div>
+
+
+          <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('courses')"> <a href="astro.html">📚 Learning Modules</a></div>
+            <div class="nav-tab" onclick="showSection('climate')"> <a href="climate.html">🌍 Climate Quiz</a></div>
+            <div class="nav-tab"><a href="carb.html">Carbon  Intensity</a></div>
+
+            
+        </div>
+
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="category">
+                    <h3>🚗 Transportation</h3>
+                    <div class="input-group">
+                        <label for="carKm" id="carKmLabel">Car/Okada Distance (km):</label>
+                        <input type="number" id="carKm" placeholder="e.g., 50">
+                    </div>
+                    <div class="input-group">
+                        <label for="carType">Vehicle Type:</label>
+                        <select id="carType">
+                            <option value="gasoline">Petrol Car</option>
+                            <option value="okada">Okada/Motorcycle</option>
+                            <option value="diesel">Diesel Car</option>
+                            <option value="bus">Danfo/Bus</option>
+                            <option value="keke">Keke NAPEP</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="flights" id="flightsLabel">Domestic Flight Hours:</label>
+                        <input type="number" id="flights" placeholder="e.g., 2">
+                    </div>
+                </div>
+
+                <div class="category">
+                    <h3>⚡ Energy</h3>
+                    <div class="input-group">
+                        <label for="electricity" id="electricityLabel">Electricity Usage (kWh):</label>
+                        <input type="number" id="electricity" placeholder="e.g., 25">
+                    </div>
+                    <div class="input-group">
+                        <label for="generator" id="generatorLabel">Generator Fuel (Litres):</label>
+                        <input type="number" id="generator" placeholder="e.g., 10">
+                    </div>
+                    <div class="input-group">
+                        <label for="cookingGas" id="cookingGasLabel">Cooking Gas (kg):</label>
+                        <input type="number" id="cookingGas" placeholder="e.g., 12.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="energySource">Primary Power Source:</label>
+                        <select id="energySource">
+                            <option value="grid">NEPA/Grid</option>
+                            <option value="generator">Generator Only</option>
+                            <option value="solar">Solar + Grid</option>
+                            <option value="mixed">Mixed (Grid + Generator)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <h3>🍽️ Diet & Lifestyle</h3>
+                    <div class="input-group">
+                        <label for="diet">Diet Type:</label>
+                        <select id="diet">
+                            <option value="nigerian-mixed">Nigerian Mixed (Rice, Beans, Meat)</option>
+                            <option value="heavy-meat">Heavy Meat (Suya, Peppered meat)</option>
+                            <option value="vegetarian">Mostly Vegetarian</option>
+                            <option value="fish-focused">Fish-focused (Catfish, Tilapia)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="waste" id="wasteLabel">Household Waste (kg):</label>
+                        <input type="number" id="waste" placeholder="e.g., 5">
+                    </div>
+                </div>
+
+                <button class="calculate-btn"  onclick="calculateFootprint()">
+                    Calculate My Carbon Footprint
+                </button>
+            </div>
+
+            <div class="results-section">
+                <div class="results" id="results">
+                    <div class="total-emissions">
+                        <h2 id="totalEmissionsTitle">Total Emissions</h2>
+                        <div class="amount" id="totalEmissions">0</div>
+                        <p>kg CO₂ equivalent</p>
+                    </div>
+
+                    <div class="breakdown" id="breakdown">
+                        <!-- Breakdown items will be inserted here -->
+                    </div>
+
+                    <div class="tips">
+                        <h3>💡 Tips to Reduce Your Footprint</h3>
+                        <ul id="tipsList">
+                            <li>Use public transportation or bike when possible</li>
+                            <li>Switch to renewable energy sources</li>
+                            <li>Reduce meat consumption</li>
+                            <li>Minimize waste and recycle</li>
+                            <li>Choose energy-efficient appliances</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="data/carbon_footprint_tracker.js"></script>
+
+    
+</body>
+</html>
